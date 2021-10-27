@@ -8,23 +8,6 @@ namespace ProjectPartB_B1
 {
 	public class PlayingCard:IComparable<PlayingCard>, IPlayingCard
 	{
-		/// <summary>
-		/// Enum type representing a playing card color, also called suit
-		/// </summary>
-		public enum PlayingCardColor
-		{
-			Clubs = 0, Diamonds, Hearts, Spades         // Poker suit order, Spades highest
-		}
-
-		/// <summary>
-		/// Enum type representing a playing card value
-		/// </summary>
-		public enum PlayingCardValue
-		{
-			Two = 2, Three, Four, Five, Six, Seven, Eight, Nine, Ten,
-			Knight, Queen, King, Ace                // Poker Value order
-		}
-
 		public PlayingCardColor Color { get; init; }
 		public PlayingCardValue Value { get; init; }
 
@@ -32,12 +15,17 @@ namespace ProjectPartB_B1
 		//Need only to compare value in the project
 		public int CompareTo(PlayingCard card1)
         {
-			return 0;
+			if (this.Value.CompareTo(card1.Value) < 0)
+				return -1;
+			else if (this.Value.CompareTo(card1.Value) == 0)
+				return 0;
+			else
+				return 1;
         }
 		#endregion
 
         #region ToString() related
-		string ShortDescription
+		private string ShortDescription
 		{
 			//Use switch statment or switch expression
 			//https://en.wikipedia.org/wiki/Playing_cards_in_Unicode
@@ -45,10 +33,10 @@ namespace ProjectPartB_B1
 			{
 				return Color switch
 				{
-					PlayingCardColor.Spades => "\u2660",
-					PlayingCardColor.Hearts => "\u2665",
-					PlayingCardColor.Diamonds => "\u2666",
-					PlayingCardColor.Clubs => "\u2663",
+					PlayingCardColor.Spades => $"\u2660 {Value}",
+					PlayingCardColor.Hearts => $"\u2665 {Value}",
+					PlayingCardColor.Diamonds => $"\u2666 {Value}",
+					PlayingCardColor.Clubs => $"\u2663 {Value}",
 					_ => throw new ArgumentOutOfRangeException(nameof(Color), $"Not expected color value: {Color}")
 
 				};
