@@ -8,9 +8,12 @@ namespace ProjectPartB_B1
         {
             DeckOfCards myDeck = new DeckOfCards();
             myDeck.CreateFreshDeck();
+            Console.WriteLine(myDeck.Count);
+
+            
             Console.WriteLine($"\nA freshly created deck with {myDeck.Count} cards:");
             Console.WriteLine(myDeck);
-
+            
             Console.WriteLine($"\nA sorted deck with {myDeck.Count} cards:");
             myDeck.Sort();
             Console.WriteLine(myDeck);
@@ -19,8 +22,8 @@ namespace ProjectPartB_B1
             myDeck.Shuffle();
             Console.WriteLine(myDeck);
 
-            HandOfCards player1 = new HandOfCards();
-            HandOfCards player2 = new HandOfCards();
+            //HandOfCards player1 = new HandOfCards();
+            //HandOfCards player2 = new HandOfCards();
 
             //Your code to play the game comes here
         }
