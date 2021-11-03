@@ -21,6 +21,7 @@ namespace ProjectPartB_B1
         { 
             get
             {
+                //Basic indexer
                 if (idx < 0 || idx >= cards.Count)
                     throw new IndexOutOfRangeException("Index out of range");
                 return cards[idx];
@@ -65,7 +66,13 @@ namespace ProjectPartB_B1
         /// </summary>
         public void Shuffle()
         {
-            // I can't get enough of .OrderBy from System.Linq. I've been using it a lot now... The code is so clean looking.
+            //I can't get enough of .OrderBy from System.Linq. I've been using it a lot now... The code is so clean looking.
+            //So, what do I know about OrderBy?
+            //First of all, I don't know a lot about LINQ yet, but I know it's about queries to databases or datasets.
+            //As for OrderBy itself, I know the basic use and that it uses deferred execution.
+            //It uses a key or comparer to sort elements, which will be random in the case of using random.Next().
+            //If you don't add ToList at the end to convert the result into a list, or convert it into something else, it will be an IOrderedEnumerable.
+            //I don't know about all the uses for IOrderedEnumerable; there seems to be a lot.
             Random random = new Random();
             cards = cards.OrderBy(x => random.Next()).ToList();
         }
@@ -75,7 +82,7 @@ namespace ProjectPartB_B1
         /// </summary>
         public void Sort()
         {
-            //Since PlayingCard implements IComparable<T>, this should work out nicely.
+            //Since PlayingCard implements IComparable<T>, simply using Sort should work out nicely.
             cards.Sort();
         }
         #endregion
@@ -96,16 +103,13 @@ namespace ProjectPartB_B1
         /// </summary>
         public void CreateFreshDeck()
         {
-            //I was looking up the syntax of Enum.GetValues.
-            //But according to this site I visited, Enum.GetNames would be better since it's 10x faster:
-            //https://www.csharp411.com/c-count-items-in-an-enum/
-            //In my case there's no difference between using .GetNames and .GetValues, since I'm not using any duplicate values.
-            //So I decided to use .GetNames.
-            for (int i = 0; i < Enum.GetNames(typeof(PlayingCardColor)).Length; i++)
+            //Just looping through both enums to get cards with all possible values
+            //I decied to just use .GetEnumValues instead of .GetEnumNames since I want to be able to easily convert back into enums
+            foreach (var col in typeof(PlayingCardColor).GetEnumValues())
             {
-                for(int j = 2; j < Enum.GetNames(typeof(PlayingCardValue)).Length + 2; j++)
+                foreach (var val in typeof(PlayingCardValue).GetEnumValues())
                 {
-                    cards.Add(new PlayingCard { Color = (PlayingCardColor)i, Value = (PlayingCardValue)j });
+                    cards.Add(new PlayingCard { Color = (PlayingCardColor)col, Value = (PlayingCardValue)val });
                 }
             }
         }
@@ -125,7 +129,11 @@ namespace ProjectPartB_B1
             //It's unclear if the top card should be the last card or the first card in the list.
             //I'm going with the first card.
             //Using RemoveAt to remove the 0th index card:
+
+            //By default, RemoveAt will throw an ArgumentOutOfRangeException if it doesn't work.
+            //It makes sense to handle a potential error outside this method since you'd want the entire method to fail if you can't remove a card.
             cards.RemoveAt(0);
+
             return card;
         }
         #endregion
