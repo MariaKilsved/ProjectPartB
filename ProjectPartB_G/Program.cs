@@ -37,15 +37,39 @@ namespace ProjectPartB_B1
             Continue = TryReadNrOfRounds(out NrOfRounds);
             if (!Continue) return;
 
-            //I think it would have been nice to encapsulate this
+            Console.WriteLine();
+            //I think it would have been nice to encapsulate the game part in its own method.
+            //However, there is just so much console output
             for(int i = 0; i < NrOfRounds; i++)
             {
                 Console.WriteLine($"Playing round nr {i + 1}");
                 Console.WriteLine("------------------");
-                Console.WriteLine("Gave ");
+                //Using error handling due to reasons of principle
+                try
+                {
+                    //I don't think Deal should call Clear, since that isn't its purpose.
+                    //What if you wanted to keep the cards? 
+                    //So I'm using Clear outside of the Deal method instead
+                    player1.Clear();
+                    player2.Clear();
+                    Deal(myDeck, NrOfCards, player1, player2);
+                    //Spelling copied from the Project Part B Explanation
+                    Console.WriteLine($"Gave {NrOfCards} card each to a players from the top of the deck. Deck has now {myDeck.Count} cards.");
+                    Console.WriteLine();
+                    Console.WriteLine($"{nameof(player1)} hand with {NrOfCards} cards.");
+                    Console.WriteLine(player1);
+                    Console.WriteLine();
+                    Console.WriteLine($"{nameof(player2)} hand with {NrOfCards} cards.");
+                    Console.WriteLine(player2);
+                    Console.WriteLine();
+                    DetermineWinner(player1, player2);
+                    Console.WriteLine();
+                }
+                catch
+                {
+                    Console.WriteLine("Not enough cards in deck.");
+                }
             }
-
-
 
 
         }
@@ -122,20 +146,19 @@ namespace ProjectPartB_B1
         private static void Deal(DeckOfCards myDeck, int nrCardsToPlayer, HandOfCards player1, HandOfCards player2)
         {
             //Looping a number of times corresponding to the number of cards that should be received
-
             for(int i = 0; i < nrCardsToPlayer; i++)
             {
-                //Can add directly from myDeck to HandOfCards since the parameter of Add is a card just like the return value of RemoveTopCard
-                //However, myDeck might be out of cards which necessiates error handling.
-                try 
+                //Error handling isn't actually necessary due to a set number of cards and rounds, I know.
+                //But I've been thinking about it, and I'm adding it in anyway to tie up loose ends.
+                //After all, this method could be used differently...
+                try
                 {
+                    //Can add directly from myDeck to HandOfCards since the parameter of Add is a card just like the return value of RemoveTopCard
                     player1.Add(myDeck.RemoveTopCard());
                     player2.Add(myDeck.RemoveTopCard());
                 }
                 catch
                 {
-                    //I chose to print out when there are no more cards left.
-                    Console.WriteLine("Not enough cards in deck.");
                     throw;
                 }
             }
