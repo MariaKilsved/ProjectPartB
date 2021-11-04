@@ -14,7 +14,7 @@ namespace ProjectPartB_B2
         /// Add a card to the hand and sorts the hand
         /// </summary>
         /// <param name="card">Card to be added</param>
-        public void Add(PlayingCard card)
+        public virtual void Add(PlayingCard card)
         {
             cards.Add(card);
             cards.Sort();

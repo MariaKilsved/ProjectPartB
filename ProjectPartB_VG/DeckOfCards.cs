@@ -92,7 +92,7 @@ namespace ProjectPartB_B2
         /// <summary>
         /// Empties the deck of cards so no cards in the deck
         /// </summary>
-        public void Clear()
+        public virtual void Clear()
         {
             cards.Clear();
         }
