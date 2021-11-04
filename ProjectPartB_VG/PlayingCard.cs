@@ -6,31 +6,44 @@ using System.Threading.Tasks;
 
 namespace ProjectPartB_B2
 {
-	public class PlayingCard:IComparable<PlayingCard>, IPlayingCard
+	public class PlayingCard : IComparable<PlayingCard>, IPlayingCard
 	{
 		public PlayingCardColor Color { get; init; }
 		public PlayingCardValue Value { get; init; }
 
 		#region IComparable Implementation
-		//Need compare value and color in poker. If values are equal, color determines highest card
+		//Need only to compare value in the project
 		public int CompareTo(PlayingCard card1)
-        {
-			return 0;
-        }
+		{
+			if (this.Value.CompareTo(card1.Value) < 0)
+				return -1;
+			else if (this.Value.CompareTo(card1.Value) == 0)
+				return 0;
+			else
+				return 1;
+		}
 		#endregion
 
-        #region ToString() related
-		string ShortDescription
+		#region ToString() related
+		private string ShortDescription
 		{
 			//Use switch statment or switch expression
 			//https://en.wikipedia.org/wiki/Playing_cards_in_Unicode
 			get
 			{
-				return "Short Description of the card";
+				return Color switch
+				{
+					PlayingCardColor.Spades => $"\u2660 {Value}",
+					PlayingCardColor.Hearts => $"\u2665 {Value}",
+					PlayingCardColor.Diamonds => $"\u2666 {Value}",
+					PlayingCardColor.Clubs => $"\u2663 {Value}",
+					_ => throw new ArgumentOutOfRangeException(nameof(Color), $"Not expected color value: {Color}")
+
+				};
 			}
 		}
 
 		public override string ToString() => ShortDescription;
-        #endregion
-    }
+		#endregion
+	}
 }
