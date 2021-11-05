@@ -58,19 +58,49 @@ namespace ProjectPartB_B2
         //Hint: Worker Methods to examine a sorted hand
         private int NrSameValue(int firstValueIdx, out int lastValueIdx, out PlayingCard HighCard) 
         {
-            lastValueIdx = 0;
-            HighCard = null;
-            return 0; 
+            lastValueIdx = firstValueIdx;
+            HighCard = cards[4];
+
+            int counter = 0;
+            // First, a loop through all cards except the first one
+            for (int i = firstValueIdx + 1; i < cards.Count; i++)
+            {
+                //Check if cards have the same value as the first one. Increase the values by 1 if they do.
+                if (cards[firstValueIdx].Value == cards[i].Value)
+                {
+                    lastValueIdx++;
+                    counter++;
+                }
+            }
+            return counter; 
         }
         private bool IsSameColor(out PlayingCard HighCard)
         {
-            HighCard = null;
-            return false;
+            HighCard = cards[4];
+            //If any of the cards have a different color, return false
+            //Essentially tests if it is a Flush
+            for (int i = 1; i < cards.Count; i++)
+            {
+                if (cards[0].Color != cards[i].Color)
+                {
+                    return false;
+                }
+            }
+            return true;
         }
         private bool IsConsecutive(out PlayingCard HighCard)
         {
-            HighCard = null;
-            return false;
+            HighCard = cards[4];
+            //If any two consecutive cards doesn't have a difference of 1 in value, return false
+            //Essentially tests for a Straight
+            for (int i = 0; i < cards.Count - 1; i++)
+            {
+                if (cards[i].Value - 1 != cards[i + 1].Value)
+                {
+                    return false;
+                }
+            }
+            return true;
         }
 
         //Hint: Worker Properties to examine each rank
@@ -78,54 +108,32 @@ namespace ProjectPartB_B2
         {
             get
             {
-                //A royal flush should be a straight flush, as well as include the Ace
-                if (!IsStraightFlush || cards[4].Value != PlayingCardValue.Ace)
-                    return false;
-                return true;
+                PlayingCard HighCard = null;
+                if (IsSameColor(out HighCard) && IsConsecutive(out HighCard))
+                {
+                    if (HighCard.Value == PlayingCardValue.Ace)
+                        return true;
+                }
+                return false;
             }
         }
         private bool IsStraightFlush
         {
             get
             {
-                for (int i = 0; i < cards.Count - 1; i++)
-                {
-                    //If two consecutive cards don't have a difference in value of only one, or if they don't have the same color, return false
-                    if (cards[i].Value - 1 != cards[i + 1].Value || cards[i].Color != cards[i + 1].Color)
-                    {
-                        return false;
-                    }
-                }
-                return true;
+                if (IsSameColor(out _) && IsConsecutive(out _))
+                    return true;
+                return false;
             }
         }
         private bool IsFourOfAKind
         {
             get
             {
-                bool firstFourEqual = true;
-                bool finalFourEqual = true;
-
-                //First, check if the first four cards have the same value
-                for (int i = 1; i < cards.Count - 1; i++)
+                if (NrSameValue(0, out _, out _) == 4 || NrSameValue(1, out _, out _) == 4)
                 {
-                    if (cards[0].Value != cards[i].Value)
-                    {
-                        firstFourEqual = false;
-                    }
-                }
-                //Then, check if the final four cards have the same value
-                for (int i = 2; i < cards.Count; i++)
-                {
-                    if (cards[1].Value != cards[i].Value)
-                    {
-                        finalFourEqual = false;
-                    }
-                }
-
-                if (firstFourEqual || finalFourEqual)
                     return true;
-
+                }
                 return false;
             }
         }
@@ -149,49 +157,46 @@ namespace ProjectPartB_B2
         {
             get
             {
-                //If any of the cards have a different color, return false
-                for (int i = 1; i < cards.Count; i++)
-                {
-                    if (cards[0].Color != cards[i].Color)
-                    {
-                        return false;
-                    }
-                }
-                return true;
+                return IsSameColor(out _);
             }
         }
         private bool IsStraight
         {
             get
             {
-                //If any two consecutive cards doesn't have a difference of 1 in value, return false
-                for (int i = 0; i < cards.Count - 1; i++)
-                {
-                    if (cards[i].Value - 1 != cards[i + 1].Value)
-                    {
-                        return false;
-                    }
-                }
-                return true;
+                return IsConsecutive(out _);
             }
         }
         private bool IsThreeOfAKind
         {
             get
             {
-                //If the first 3 cards are the same, return true; no need to check the 2nd card
-                if (cards[0].Value == cards[2].Value)
-                    return true;
-                //If the final 3 cards are the same, return true; no need to check the 2nd last card
-                if (cards[2].Value == cards[4].Value)
+                if (NrSameValue(0, out _, out _) == 3 || NrSameValue(1, out _, out _) == 3 || NrSameValue(2, out _, out _) == 3)
                     return true;
                 return false;
+
+                /*
+                //Alternative to the above:
+                if(cards[0].Value == cards[2].Value || cards[1].Value == cards[3].Value || cards[2].Value == cards[4].Value)
+                    return true;
+                return false;
+                */
             }
         }
         private bool IsTwoPair
         {
             get
             {
+                //private int NrSameValue(int firstValueIdx, out int lastValueIdx, out PlayingCard HighCard)
+                int lastValueIdx = 0;
+                PlayingCard HighCard = null;
+                int duplicates = NrSameValue(0, out lastValueIdx, out HighCard);
+
+
+
+                return false;
+
+                /*
                 int nrOfPairs = 0;
 
                 //Loop through the cards and count any duplicates in value. 
@@ -206,6 +211,7 @@ namespace ProjectPartB_B2
                     return true;
 
                 return false;
+                */
             }
         }
         private bool IsPair
