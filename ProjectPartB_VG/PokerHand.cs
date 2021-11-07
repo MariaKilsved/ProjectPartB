@@ -43,39 +43,60 @@ namespace ProjectPartB_B2
         /// The highest card in a rank when rank. 
         /// Null when rank is PokerRank.Undefined
         /// </summary>
-        public PlayingCard RankHiCard => (Rank == PokerRank.Unknown) ? null : _rankHigh;
+        public PlayingCard RankHiCard => (Rank == PokerRank.Unknown)? null : _rankHigh;
 
         /// <summary>
         /// The highest card in the first pair when rank is PokerRank.TwoPair, otherwise null
         /// </summary>
-        public PlayingCard RankHiCardPair1 => _rankHighPair1;
+        public PlayingCard RankHiCardPair1 => (Rank == PokerRank.TwoPair)? _rankHighPair1 : null;
 
         /// <summary>
         /// The highest card in the second pair when rank is PokerRank.TwoPair, otherwise null
         /// </summary>
-        public PlayingCard RankHiCardPair2 => _rankHighPair2;
+        public PlayingCard RankHiCardPair2 => (Rank == PokerRank.TwoPair)? _rankHighPair2 : null;
 
         //Hint: Worker Methods to examine a sorted hand
+
+        /// <summary>
+        /// Tests to see if any of the following cards in the PokerHand have the same value as the card with th
+        /// </summary>
+        /// <param name="firstValueIdx">Index of the card to be tested for duplicate values</param>
+        /// <param name="lastValueIdx">Index of the last card to have the same value as the card on firstValueIdx</param>
+        /// <param name="HighCard">Highest card among the duplicate cards, or the highest card in the PokerHand if there is no duplicate</param>
+        /// <returns>The number of duplicate cards found.</returns>
         private int NrSameValue(int firstValueIdx, out int lastValueIdx, out PlayingCard HighCard) 
         {
+            //Last index will be the same as the first if there are no duplicates
             lastValueIdx = firstValueIdx;
+
+            //HighCard defaults to the last card if there are no identical values
             HighCard = cards[4];
 
+            //Counter for number of duplicates found
             int counter = 0;
-            // First, a loop through all cards except the first one
+            // Loop through all cards following the firstValueIdx
             for (int i = firstValueIdx + 1; i < cards.Count; i++)
             {
-                //Check if cards have the same value as the first one. Increase the values by 1 if they do.
+                //Check if cards have the same value as the firstValueIdx. Increase the counter and lastValueIdx by 1 if they do.
                 if (cards[firstValueIdx].Value == cards[i].Value)
                 {
                     lastValueIdx++;
                     counter++;
+                    //Set HighCard to the highest card found among the duplicates
+                    HighCard = cards[i];
                 }
             }
             return counter; 
         }
+
+        /// <summary>
+        /// Tests to see if all cards have the same color
+        /// </summary>
+        /// <param name="HighCard">Highest card in the PokerHand</param>
+        /// <returns>True or false depending on the result</returns>
         private bool IsSameColor(out PlayingCard HighCard)
         {
+            //HighCard will be the last card no matter what
             HighCard = cards[4];
             //If any of the cards have a different color, return false
             //Essentially tests if it is a Flush
@@ -88,8 +109,15 @@ namespace ProjectPartB_B2
             }
             return true;
         }
+
+        /// <summary>
+        /// Tests to see if all cards are consecutive, with only a one point difference in value between each card.
+        /// </summary>
+        /// <param name="HighCard">Highest card in the PokerHand</param>
+        /// <returns>True or false depending on the result</returns>
         private bool IsConsecutive(out PlayingCard HighCard)
         {
+            //HighCard will be the last card no matter what
             HighCard = cards[4];
             //If any two consecutive cards doesn't have a difference of 1 in value, return false
             //Essentially tests for a Straight
@@ -109,7 +137,8 @@ namespace ProjectPartB_B2
             get
             {
                 PlayingCard HighCard = null;
-                if (IsSameColor(out HighCard) && IsConsecutive(out HighCard))
+                //I'm using HighCard here, but I could have just used cards[4].Value... It's the same thing.
+                if (IsSameColor(out _) && IsConsecutive(out HighCard))
                 {
                     if (HighCard.Value == PlayingCardValue.Ace)
                         return true;
@@ -130,6 +159,7 @@ namespace ProjectPartB_B2
         {
             get
             {
+                //Since there are 5 cards, only the 0th and 1st index need to be tested with NrSameValue
                 if (NrSameValue(0, out _, out _) == 4 || NrSameValue(1, out _, out _) == 4)
                 {
                     return true;
@@ -171,6 +201,7 @@ namespace ProjectPartB_B2
         {
             get
             {
+                //Since there are only 5 cards, it's unnecessary to test the last two cards.
                 if (NrSameValue(0, out _, out _) == 3 || NrSameValue(1, out _, out _) == 3 || NrSameValue(2, out _, out _) == 3)
                     return true;
                 return false;
@@ -189,42 +220,60 @@ namespace ProjectPartB_B2
             {
                 //private int NrSameValue(int firstValueIdx, out int lastValueIdx, out PlayingCard HighCard)
                 int lastValueIdx = 0;
-                PlayingCard HighCard = null;
-                int duplicates = NrSameValue(0, out lastValueIdx, out HighCard);
+                bool firstPair = false;
+                PlayingCard HighCard = cards[4];
 
-
-
-                return false;
-
-                /*
-                int nrOfPairs = 0;
-
-                //Loop through the cards and count any duplicates in value. 
-                //Will regard three and four of a kind as pairs, but that doesn't matter as those are higher ranks
+                //Loop through all cards except the last one to check for duplicates
                 for(int i = 0; i < cards.Count - 1; i++)
                 {
-                    if (cards[i].Value == cards[i + 1].Value)
-                        nrOfPairs++;
-                }
-                //Returns true if there are at least two duplicates
-                if (nrOfPairs >= 2)
-                    return true;
+                    //How many duplicates in value does cards[i] have?
+                    int duplicates = NrSameValue(i, out lastValueIdx, out HighCard);
 
+                    //If another pair was found before, and there is a second pair now, return true
+                    if (duplicates == 1 && firstPair)
+                    {
+                        return true;
+                    }
+
+                    //There is at least one pair if the number of duplicates is exactly 1
+                    if (duplicates == 1 && !firstPair) 
+                    {
+                        firstPair = true;
+
+                        //Skip ahead to the lastValueIdx.
+                        //Though confusing, I want to use lastValueIdx for something. Or I might just discard it.
+                        i = lastValueIdx;   
+                    }
+                }
                 return false;
-                */
             }
         }
         private bool IsPair
         {
             get
             {
-                //Loop through the cards and returns true if any duplicates in value are found
+                PlayingCard HighCard = cards[4];
+
+                for (int i = 0; i < cards.Count - 1; i++)
+                {
+                    //Specifically testing for pairs and not for triple cards
+                    //Will return true as soon as 1 pair is found, ignoring any potential card combinations on higher indexes in the PokerHand.
+                    if(NrSameValue(i, out _, out HighCard) == 1)
+                    {
+                        return true;
+                    }
+                }
+                return false;
+
+                /*
+                //Alternative to the above:
                 for (int i = 0; i < cards.Count - 1; i++)
                 {
                     if (cards[i].Value == cards[i + 1].Value)
                         return true;
                 }
                 return false;
+                */
             }
         }
 
@@ -239,28 +288,30 @@ namespace ProjectPartB_B2
         /// <returns>The pokerhand rank. PokerRank.Undefined in case Hand is not 5 cards</returns>
         public PokerRank DetermineRank()
         {
-            //Default to HighCard
-            PokerRank theRank = PokerRank.HighCard;
+            PokerRank theRank = PokerRank.Unknown;
 
-            //Check for poker hand ranks from lowest to highest
-            if (IsPair)
-                theRank = PokerRank.Pair;
-            if (IsTwoPair)
-                theRank = PokerRank.TwoPair;
-            if (IsThreeOfAKind)
-                theRank = PokerRank.ThreeOfAKind;
-            if (IsStraight)
-                theRank = PokerRank.Straight;
-            if (IsFlush)
-                theRank = PokerRank.Flush;
-            if (IsFullHouse)
-                theRank = PokerRank.FullHouse;
-            if (IsFourOfAKind)
-                theRank = PokerRank.FourOfAKind;
-            if (IsStraightFlush)
-                theRank = PokerRank.StraightFlush;
+            //Check for poker hand ranks from highest to lowest
+            //Unfortunately can't use switch since different properties are tested, not the same value
             if (IsRoyalFlush)
                 theRank = PokerRank.RoyalFlush;
+            else if (IsStraightFlush)
+                theRank = PokerRank.StraightFlush;
+            else if (IsFourOfAKind)
+                theRank = PokerRank.FourOfAKind;
+            else if (IsFullHouse)
+                theRank = PokerRank.FullHouse;
+            else if (IsFlush)
+                theRank = PokerRank.Flush;
+            else if (IsStraight)
+                theRank = PokerRank.Straight;
+            else if (IsThreeOfAKind)
+                theRank = PokerRank.ThreeOfAKind;
+            else if (IsTwoPair)
+                theRank = PokerRank.TwoPair;
+            else if (IsPair)
+                theRank = PokerRank.Pair;
+            else
+                theRank = PokerRank.HighCard;
 
 
             /*
