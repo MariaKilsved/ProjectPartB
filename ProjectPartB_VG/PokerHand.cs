@@ -66,6 +66,26 @@ namespace ProjectPartB_B2
         /// <returns>The number of duplicate cards found.</returns>
         private int NrSameValue(int firstValueIdx, out int lastValueIdx, out PlayingCard HighCard) 
         {
+            int counter = 0;
+            lastValueIdx = firstValueIdx;
+            HighCard = cards[4];
+
+            if (firstValueIdx < 4 && cards[firstValueIdx].Value == cards[firstValueIdx + 1].Value)
+            {
+                counter++;
+                counter = NrSameValue(firstValueIdx + 1, out _, out _);
+                return counter;
+            }
+            else
+            {
+                lastValueIdx = firstValueIdx;
+                return counter;
+            }
+
+
+
+            /*
+            //===ORIGINAL SOLUTION===
             //Last index will be the same as the first if there are no duplicates
             lastValueIdx = firstValueIdx;
 
@@ -87,6 +107,7 @@ namespace ProjectPartB_B2
                 }
             }
             return counter; 
+            */
         }
 
         /// <summary>
