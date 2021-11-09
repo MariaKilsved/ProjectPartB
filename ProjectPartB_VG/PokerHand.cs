@@ -66,6 +66,8 @@ namespace ProjectPartB_B2
         /// <returns>The number of duplicate cards found.</returns>
         private int NrSameValue(int firstValueIdx, out int lastValueIdx, out PlayingCard HighCard) 
         {
+            /*
+            //===RECURSIVE SOLUTION===
             int counter = 0;
             lastValueIdx = firstValueIdx;
             HighCard = cards[4];
@@ -81,10 +83,10 @@ namespace ProjectPartB_B2
                 lastValueIdx = firstValueIdx;
                 return counter;
             }
+            */
 
 
-
-            /*
+            
             //===ORIGINAL SOLUTION===
             //Last index will be the same as the first if there are no duplicates
             lastValueIdx = firstValueIdx;
@@ -107,7 +109,7 @@ namespace ProjectPartB_B2
                 }
             }
             return counter; 
-            */
+            
         }
 
         /// <summary>
@@ -157,11 +159,10 @@ namespace ProjectPartB_B2
         {
             get
             {
-                PlayingCard HighCard = null;
                 //I'm using HighCard here, but I could have just used cards[4].Value... It's the same thing.
-                if (IsSameColor(out _) && IsConsecutive(out HighCard))
+                if (IsSameColor(out _) && IsConsecutive(out _rankHigh))
                 {
-                    if (HighCard.Value == PlayingCardValue.Ace)
+                    if (_rankHigh.Value == PlayingCardValue.Ace)
                         return true;
                 }
                 return false;
@@ -171,7 +172,7 @@ namespace ProjectPartB_B2
         {
             get
             {
-                if (IsSameColor(out _) && IsConsecutive(out _))
+                if (IsSameColor(out _) && IsConsecutive(out _rankHigh))
                     return true;
                 return false;
             }
@@ -181,7 +182,7 @@ namespace ProjectPartB_B2
             get
             {
                 //Since there are 5 cards, only the 0th and 1st index need to be tested with NrSameValue
-                if (NrSameValue(0, out _, out _) == 4 || NrSameValue(1, out _, out _) == 4)
+                if (NrSameValue(0, out _, out _rankHigh) == 4 || NrSameValue(1, out _, out _rankHigh) == 4)
                 {
                     return true;
                 }
@@ -192,15 +193,15 @@ namespace ProjectPartB_B2
         {
             get
             {
-                //If the first two cards aren't the same, or if the final two cards aren't the same, return false
-                if (cards[0].Value != cards[1].Value || cards[3].Value != cards[4].Value)
+                //If the first 3 cards are the same, and the last 2 cards are the same, return true
+                if (NrSameValue(0, out _, out _) == 3 && NrSameValue(3, out _, out _rankHigh) == 2)
+                    return true;
+                //If the first 2 cards are the same, and the last 3 cards are the same, return true
+                else if (NrSameValue(0, out _, out _) == 2 && NrSameValue(3, out _, out _rankHigh) == 3)
+                    return true;
+                //Otherwise, return false
+                else
                     return false;
-
-                //If the middle card isn't the same as the 2nd card, and the middle card isn't the same as the 4th card, return false
-                if (cards[2].Value != cards[1].Value && cards[2].Value != cards[3].Value)
-                    return false;
-
-                return true;
 
             }
         }
@@ -208,14 +209,14 @@ namespace ProjectPartB_B2
         {
             get
             {
-                return IsSameColor(out _);
+                return IsSameColor(out _rankHigh);
             }
         }
         private bool IsStraight
         {
             get
             {
-                return IsConsecutive(out _);
+                return IsConsecutive(out _rankHigh);
             }
         }
         private bool IsThreeOfAKind
@@ -223,16 +224,9 @@ namespace ProjectPartB_B2
             get
             {
                 //Since there are only 5 cards, it's unnecessary to test the last two cards.
-                if (NrSameValue(0, out _, out _) == 3 || NrSameValue(1, out _, out _) == 3 || NrSameValue(2, out _, out _) == 3)
+                if (NrSameValue(0, out _, out _rankHigh) == 3 || NrSameValue(1, out _, out _rankHigh) == 3 || NrSameValue(2, out _, out _rankHigh) == 3)
                     return true;
                 return false;
-
-                /*
-                //Alternative to the above:
-                if(cards[0].Value == cards[2].Value || cards[1].Value == cards[3].Value || cards[2].Value == cards[4].Value)
-                    return true;
-                return false;
-                */
             }
         }
         private bool IsTwoPair
@@ -242,17 +236,21 @@ namespace ProjectPartB_B2
                 //private int NrSameValue(int firstValueIdx, out int lastValueIdx, out PlayingCard HighCard)
                 int lastValueIdx = 0;
                 bool firstPair = false;
-                PlayingCard HighCard = cards[4];
+                PlayingCard highCard = null;
+                PlayingCard highCard1 = null;
 
                 //Loop through all cards except the last one to check for duplicates
                 for(int i = 0; i < cards.Count - 1; i++)
                 {
                     //How many duplicates in value does cards[i] have?
-                    int duplicates = NrSameValue(i, out lastValueIdx, out HighCard);
+                    int duplicates = NrSameValue(i, out lastValueIdx, out highCard);
 
                     //If another pair was found before, and there is a second pair now, return true
                     if (duplicates == 1 && firstPair)
                     {
+                        _rankHigh = cards[4];
+                        _rankHighPair1 = highCard1;
+                        _rankHighPair2 = highCard;
                         return true;
                     }
 
@@ -260,6 +258,9 @@ namespace ProjectPartB_B2
                     if (duplicates == 1 && !firstPair) 
                     {
                         firstPair = true;
+
+                        //Save for next loop
+                        highCard1 = highCard;
 
                         //Skip ahead to the lastValueIdx.
                         //Though confusing, I want to use lastValueIdx for something. Or I might just discard it.
@@ -273,28 +274,17 @@ namespace ProjectPartB_B2
         {
             get
             {
-                PlayingCard HighCard = cards[4];
 
                 for (int i = 0; i < cards.Count - 1; i++)
                 {
                     //Specifically testing for pairs and not for triple cards
                     //Will return true as soon as 1 pair is found, ignoring any potential card combinations on higher indexes in the PokerHand.
-                    if(NrSameValue(i, out _, out HighCard) == 1)
+                    if(NrSameValue(i, out _, out _rankHigh) == 1)
                     {
                         return true;
                     }
                 }
                 return false;
-
-                /*
-                //Alternative to the above:
-                for (int i = 0; i < cards.Count - 1; i++)
-                {
-                    if (cards[i].Value == cards[i + 1].Value)
-                        return true;
-                }
-                return false;
-                */
             }
         }
 
