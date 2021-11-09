@@ -168,7 +168,7 @@ namespace ProjectPartB_B2
                 //I'm using HighCard here, but I could have just used cards[4].Value... It's the same thing.
                 if (IsSameColor(out _) && IsConsecutive(out _rankHigh))
                 {
-                    if (_rankHigh.Value == PlayingCardValue.Ace)
+                    if (cards[4].Value == PlayingCardValue.Ace)
                         return true;
                 }
                 return false;
@@ -305,10 +305,13 @@ namespace ProjectPartB_B2
         /// <returns>The pokerhand rank. PokerRank.Undefined in case Hand is not 5 cards</returns>
         public PokerRank DetermineRank()
         {
-            PokerRank theRank = PokerRank.Unknown;
+            //PokerRank theRank = PokerRank.Unknown;
 
             //Check for poker hand ranks from highest to lowest
             //Unfortunately can't use switch since different properties are tested, not the same value
+
+            PokerRank theRank = PokerRank.HighCard;
+
             if (IsRoyalFlush)
                 theRank = PokerRank.RoyalFlush;
             else if (IsStraightFlush)
@@ -329,14 +332,6 @@ namespace ProjectPartB_B2
                 theRank = PokerRank.Pair;
             else
                 theRank = PokerRank.HighCard;
-
-
-            /*
-                private PokerRank _rank = PokerRank.Unknown;
-                private PlayingCard _rankHigh = null;
-                private PlayingCard _rankHighPair1 = null;
-                private PlayingCard _rankHighPair2 = null;
-             */
 
             return theRank;
 

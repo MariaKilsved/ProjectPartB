@@ -125,8 +125,8 @@ namespace ProjectPartB_B1
             PlayingCard card = new PlayingCard { Color = cards[0].Color, Value = cards[0].Value };
 
             //It's unclear if the top card should be the last card or the first card in the list.
-            //I'm going with the first card.
-            //Using RemoveAt to remove the 0th index card:
+            //I went with the first card, using RemoveAt to remove the 0th index card.
+            //I had to change this for ProjectPartB_B2 since I had to match the console output of the ProjectPartB Explanation.
 
             //By default, RemoveAt will throw an ArgumentOutOfRangeException if it doesn't work.
             //It makes sense to handle a potential error outside this method since you'd want the entire method to fail if you can't remove a card.
