@@ -119,7 +119,7 @@ namespace ProjectPartB_B2
         public PlayingCard RemoveTopCard()
         {
             // Creating an identical card:
-            PlayingCard card = new PlayingCard { Color = cards[0].Color, Value = cards[0].Value };
+            PlayingCard card = new PlayingCard { Color = cards[^1].Color, Value = cards[^1].Value };
 
             //It's unclear if the top card should be the last card or the first card in the list.
             //I'm going with the first card.
@@ -127,7 +127,7 @@ namespace ProjectPartB_B2
 
             //By default, RemoveAt will throw an ArgumentOutOfRangeException if it doesn't work.
             //It makes sense to handle a potential error outside this method since you'd want the entire method to fail if you can't remove a card.
-            cards.RemoveAt(0);
+            cards.RemoveAt(cards.Count - 1);
 
             return card;
         }
