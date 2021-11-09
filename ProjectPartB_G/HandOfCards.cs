@@ -47,15 +47,6 @@ namespace ProjectPartB_B1
             }
         }
 
-        //A slightly different version of ToString than DeckOfCards.
-        public override string ToString()
-        {
-            string parent = base.ToString();
-            string highest = Highest.ToString();
-            string lowest = Lowest.ToString();
-
-            return $"Lowest card in hand is {lowest} and highest is {highest}:\n{parent}";
-        }
         #endregion
     }
 }

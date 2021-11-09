@@ -352,23 +352,7 @@ namespace ProjectPartB_B2
             _rank = PokerRank.Unknown;
         }
         #endregion
-        #region ToString related
-        //Another version.
-        public override string ToString()
-        {
-            string sRet = "";
 
-            for (int i = 0; i < cards.Count; i++)
-            {
-                sRet += $"{cards[i],-10}";
 
-                if ((i + 1) % 13 == 0)
-                {
-                    sRet += "\n";
-                }
-            }
-            return sRet;
-        }
-        #endregion
     }
 }

@@ -57,9 +57,11 @@ namespace ProjectPartB_B1
                     Console.WriteLine($"Gave {NrOfCards} card each to a players from the top of the deck. Deck has now {myDeck.Count} cards.");
                     Console.WriteLine();
                     Console.WriteLine($"{nameof(player1)} hand with {NrOfCards} cards.");
+                    Console.WriteLine($"Lowest card in hand is {player1.Lowest.ToString()} and highest is {player1.Highest.ToString()}:");
                     Console.WriteLine(player1);
                     Console.WriteLine();
                     Console.WriteLine($"{nameof(player2)} hand with {NrOfCards} cards.");
+                    Console.WriteLine($"Lowest card in hand is {player2.Lowest.ToString()} and highest is {player2.Highest.ToString()}:");
                     Console.WriteLine(player2);
                     Console.WriteLine();
                     DetermineWinner(player1, player2);
