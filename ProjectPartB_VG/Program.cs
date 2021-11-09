@@ -24,6 +24,8 @@ namespace ProjectPartB_B2
             {
                 //Your code to Give 5 cards to the player and determine the rank
                 //Continue for as long as the deck has at least 5 cards 
+
+
             }
         }
     }

@@ -37,7 +37,13 @@ namespace ProjectPartB_B2
         /// <summary>
         /// The rank of the pokerhand determined using DetermineRank().
         /// </summary>
-        public PokerRank Rank => _rank;
+        public PokerRank Rank
+        {
+            get
+            {
+                return DetermineRank();
+            }
+        }
 
         /// <summary>
         /// The highest card in a rank when rank. 
@@ -344,6 +350,24 @@ namespace ProjectPartB_B2
             _rankHighPair1 = null;
             _rankHighPair2 = null;
             _rank = PokerRank.Unknown;
+        }
+        #endregion
+        #region ToString related
+        //Another version.
+        public override string ToString()
+        {
+            string sRet = "";
+
+            for (int i = 0; i < cards.Count; i++)
+            {
+                sRet += $"{cards[i],-10}";
+
+                if ((i + 1) % 13 == 0)
+                {
+                    sRet += "\n";
+                }
+            }
+            return sRet;
         }
         #endregion
     }

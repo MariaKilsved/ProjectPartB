@@ -38,24 +38,22 @@ namespace ProjectPartB_B1
         //Should be overriden and implemented to print out the complete deck in short card notation
         public override string ToString()
         {
-            //Somebody in the class used StringBuilder, which led to me looking it up.
-            //So now I'm using StringBuilder when I would have added a lot of strings together.
-            //I initially wanted to set capacity to 10 because "\u2660 Diamonds" is 10 chars long.
-            //However, that doesn't account for the appended strings being different in length so I refrained.
-            StringBuilder sb = new StringBuilder();
+            //I was using StringBuilder here intially
+            string sRet = "";
 
-            for(int i = 0; i < cards.Count; i++)
+            for (int i = 0; i < cards.Count; i++)
             {
                 //It's impossible to get the spacing right in the console.
                 // It looks less weird with more spacing, but then it will look terrible if your console window is too small.
-                sb.Append($"{cards[i],-10}");
+                sRet += $"{cards[i],-10}";
 
-                if((i + 1) % 13 == 0)
+                if ((i + 1) % 13 == 0)
                 {
-                    sb.Append("\n");
+                    sRet += "\n";
                 }
             }
-            return sb.ToString();
+            return sRet;
+
         }
         #endregion
 
