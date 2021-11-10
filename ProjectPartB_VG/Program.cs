@@ -38,12 +38,13 @@ namespace ProjectPartB_B2
             */
 
             //Straight
+            /*
             Player.Add(new PlayingCard { Color = PlayingCardColor.Hearts, Value = PlayingCardValue.Ten });
             Player.Add(new PlayingCard { Color = PlayingCardColor.Spades, Value = PlayingCardValue.Nine });
             Player.Add(new PlayingCard { Color = PlayingCardColor.Diamonds, Value = PlayingCardValue.Eight });
             Player.Add(new PlayingCard { Color = PlayingCardColor.Clubs, Value = PlayingCardValue.Seven });
             Player.Add(new PlayingCard { Color = PlayingCardColor.Hearts, Value = PlayingCardValue.Six });
-
+            */
 
 
             Console.WriteLine();
@@ -67,7 +68,6 @@ namespace ProjectPartB_B2
 
 
 
-            /*
             while (myDeck.Count > 5)
             {
                 //Your code to Give 5 cards to the player and determine the rank
@@ -106,7 +106,7 @@ namespace ProjectPartB_B2
                     Console.WriteLine("Not enough cards in deck.");
                 }
 
-            }*/
+            }
         }
     }
  }

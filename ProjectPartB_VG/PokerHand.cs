@@ -126,7 +126,7 @@ namespace ProjectPartB_B2
         private bool IsSameColor(out PlayingCard HighCard)
         {
             //HighCard will be the last card no matter what
-            HighCard = cards[4];
+            HighCard = cards[cards.Count - 1];
             //If any of the cards have a different color, return false
             //Essentially tests if it is a Flush
             for (int i = 1; i < cards.Count; i++)
