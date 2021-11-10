@@ -72,33 +72,11 @@ namespace ProjectPartB_B2
         /// <returns>The number of duplicate cards found.</returns>
         private int NrSameValue(int firstValueIdx, out int lastValueIdx, out PlayingCard HighCard) 
         {
-            /*
-            //===RECURSIVE SOLUTION===
-            int counter = 0;
-            lastValueIdx = firstValueIdx;
-            HighCard = cards[4];
-
-            if (firstValueIdx < 4 && cards[firstValueIdx].Value == cards[firstValueIdx + 1].Value)
-            {
-                counter++;
-                counter = NrSameValue(firstValueIdx + 1, out _, out _);
-                return counter;
-            }
-            else
-            {
-                lastValueIdx = firstValueIdx;
-                return counter;
-            }
-            */
-
-
-            
-            //===ORIGINAL SOLUTION===
             //Last index will be the same as the first if there are no duplicates
             lastValueIdx = firstValueIdx;
 
             //HighCard defaults to the last card if there are no identical values
-            HighCard = cards[4];
+            HighCard = cards[^1];
 
             //Counter for number of duplicates found
             int counter = 0;
@@ -147,12 +125,12 @@ namespace ProjectPartB_B2
         private bool IsConsecutive(out PlayingCard HighCard)
         {
             //HighCard will be the last card no matter what
-            HighCard = cards[4];
+            HighCard = cards[^1];
             //If any two consecutive cards doesn't have a difference of 1 in value, return false
             //Essentially tests for a Straight
             for (int i = 0; i < cards.Count - 1; i++)
             {
-                if (cards[i].Value - 1 != cards[i + 1].Value)
+                if ((int)cards[i].Value + 1 != (int)cards[i + 1].Value)
                 {
                     return false;
                 }
@@ -165,10 +143,10 @@ namespace ProjectPartB_B2
         {
             get
             {
-                //I'm using HighCard here, but I could have just used cards[4].Value... It's the same thing.
+                //I'm using HighCard here, but I could have just used cards[^1].Value... It's the same thing.
                 if (IsSameColor(out _) && IsConsecutive(out _rankHigh))
                 {
-                    if (cards[4].Value == PlayingCardValue.Ace)
+                    if (cards[^1].Value == PlayingCardValue.Ace)
                         return true;
                 }
                 return false;
@@ -188,7 +166,7 @@ namespace ProjectPartB_B2
             get
             {
                 //Since there are 5 cards, only the 0th and 1st index need to be tested with NrSameValue
-                if (NrSameValue(0, out _, out _rankHigh) == 4 || NrSameValue(1, out _, out _rankHigh) == 4)
+                if (NrSameValue(0, out _, out _rankHigh) == 3 || NrSameValue(1, out _, out _rankHigh) == 3)
                 {
                     return true;
                 }
@@ -200,14 +178,15 @@ namespace ProjectPartB_B2
             get
             {
                 //If the first 3 cards are the same, and the last 2 cards are the same, return true
-                if (NrSameValue(0, out _, out _) == 3 && NrSameValue(3, out _, out _rankHigh) == 2)
+                if (NrSameValue(0, out int lastValueIdx1, out _rankHigh) == 2 && NrSameValue(lastValueIdx1 + 1, out _, out _) == 1)
                     return true;
+
                 //If the first 2 cards are the same, and the last 3 cards are the same, return true
-                else if (NrSameValue(0, out _, out _) == 2 && NrSameValue(3, out _, out _rankHigh) == 3)
+                if (NrSameValue(0, out int lastValueIdx2, out _) == 1 && NrSameValue(lastValueIdx2 +1, out _, out _rankHigh) == 2)
                     return true;
+
                 //Otherwise, return false
-                else
-                    return false;
+                return false;
 
             }
         }
@@ -254,7 +233,7 @@ namespace ProjectPartB_B2
                     //If another pair was found before, and there is a second pair now, return true
                     if (duplicates == 1 && firstPair)
                     {
-                        _rankHigh = cards[4];
+                        _rankHigh = cards[^1];
                         _rankHighPair1 = highCard1;
                         _rankHighPair2 = highCard;
                         return true;
@@ -310,31 +289,26 @@ namespace ProjectPartB_B2
             //Check for poker hand ranks from highest to lowest
             //Unfortunately can't use switch since different properties are tested, not the same value
 
-            PokerRank theRank = PokerRank.HighCard;
-
             if (IsRoyalFlush)
-                theRank = PokerRank.RoyalFlush;
-            else if (IsStraightFlush)
-                theRank = PokerRank.StraightFlush;
-            else if (IsFourOfAKind)
-                theRank = PokerRank.FourOfAKind;
-            else if (IsFullHouse)
-                theRank = PokerRank.FullHouse;
-            else if (IsFlush)
-                theRank = PokerRank.Flush;
-            else if (IsStraight)
-                theRank = PokerRank.Straight;
-            else if (IsThreeOfAKind)
-                theRank = PokerRank.ThreeOfAKind;
-            else if (IsTwoPair)
-                theRank = PokerRank.TwoPair;
-            else if (IsPair)
-                theRank = PokerRank.Pair;
-            else
-                theRank = PokerRank.HighCard;
+                return PokerRank.RoyalFlush;
+            if (IsStraightFlush)
+                return PokerRank.StraightFlush;
+            if (IsFourOfAKind)
+                return PokerRank.FourOfAKind;
+            if (IsFullHouse)
+                return PokerRank.FullHouse;
+            if (IsFlush)
+                return PokerRank.Flush;
+            if (IsStraight)
+                return PokerRank.Straight;
+            if (IsThreeOfAKind)
+                return PokerRank.ThreeOfAKind;
+            if (IsTwoPair)
+                return PokerRank.TwoPair;
+            if (IsPair)
+                return PokerRank.Pair;
 
-            return theRank;
-
+            return PokerRank.HighCard;
 
         }
 
