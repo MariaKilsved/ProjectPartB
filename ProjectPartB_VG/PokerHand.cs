@@ -37,13 +37,7 @@ namespace ProjectPartB_B2
         /// <summary>
         /// The rank of the pokerhand determined using DetermineRank().
         /// </summary>
-        public PokerRank Rank
-        {
-            get
-            {
-                return DetermineRank();
-            }
-        }
+        public PokerRank Rank => (_rank == PokerRank.Unknown)? DetermineRank() : _rank;
 
         /// <summary>
         /// The highest card in a rank when rank. 
