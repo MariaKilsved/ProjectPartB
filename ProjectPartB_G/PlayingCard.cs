@@ -15,12 +15,7 @@ namespace ProjectPartB_B1
 		//Need only to compare value in the project
 		public int CompareTo(PlayingCard card1)
         {
-			if (this.Value.CompareTo(card1.Value) < 0)
-				return -1;
-			else if (this.Value.CompareTo(card1.Value) == 0)
-				return 0;
-			else
-				return 1;
+			return this.Value.CompareTo(card1.Value);
         }
 		#endregion
 

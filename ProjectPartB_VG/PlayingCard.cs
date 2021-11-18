@@ -15,32 +15,12 @@ namespace ProjectPartB_B2
 
 		public int CompareTo(PlayingCard card1)
 		{
-			if (this.Value.CompareTo(card1.Value) < 0)
-				return -1;
-			else if (this.Value.CompareTo(card1.Value) == 0)
-				return 0;
-			else
-				return 1;
+			//By adding this code, I will NOT get the same console output as ProjectPartB Explanation:
+			if (this.Value.CompareTo(card1.Value) == 0)
+				return this.Color.CompareTo(card1.Color);
 
-			//I wanted to change this from ProjectPartB_B1 to also compare color
-			//However, I wouldn't get the same console output as in ProjectPartB Explanation if I did that
-			/*
-			if (this.Value.CompareTo(card1.Value) < 0)
-				return -1;
-			else if (this.Value.CompareTo(card1.Value) == 0)
-            {
-				if (this.Color.CompareTo(card1.Color) == 0)
-					return 0;
-				else if (this.Color.CompareTo(card1.Color) < 0)
-					return -1;
-				else
-					return 1;
-			}
-			else
-				return 1;
-			*/
-
-
+			//Compares value. 
+			return this.Value.CompareTo(card1.Value);
 		}
 		#endregion
 
